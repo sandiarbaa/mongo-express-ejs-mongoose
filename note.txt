@@ -5,3 +5,8 @@ Menerapkan Materi :
   - crud
   - filtering
   - template templating
+
+Step yg sudah dilakukan di project ini :
+  - setup express, ejs, mongoose (connection, view templating, port)
+  - membuat model dan seed
+  - membuat route /products dan menampilkan data products di halaman Products

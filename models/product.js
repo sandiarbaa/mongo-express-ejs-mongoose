@@ -17,9 +17,9 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  size: {
+  category: {
     type: String,
-    enum: ["S", "M", "L", "XL"], // isinya tidak boleh selain data ini
+    enum: ["Baju", "Celana", "Aksesoris", "Jaket"], // isinya tidak boleh selain data ini
   },
 });
 

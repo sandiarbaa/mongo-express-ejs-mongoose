@@ -10,8 +10,7 @@
     <ul>
       <li>Brand: <%= product.brand %></li>
       <li>Color: <%= product.color %></li>
-      <li>Size: <%= product.size %></li>
-      <!-- <li>Price: <%# formatRupiah(product.price) %></li> -->
+      <li>Category: <%= product.category %></li>
       <li>
         Price: <%= (product.price).toLocaleString("id-ID", { style: "currency",
         currency: "IDR", minimumFractionDigits: 0, maximumFractionDigits: 0, })

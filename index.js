@@ -33,20 +33,17 @@ app.get("/products", async (req, res) => {
   res.render("products/index", { products });
 });
 
+// form tambah data product
+app.get("/products/create", (req, res) => {
+  res.render("products/create");
+});
+
 // detail product
 app.get("/products/:id", async (req, res) => {
-  // format rupiah
-  function formatRupiah(price) {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }).format(price);
-  }
-
   // query
   const { id } = req.params;
   const product = await Product.findById(id);
-  res.render("products/show", { product, formatRupiah });
+  res.render("products/show", { product });
 });
 
 // port

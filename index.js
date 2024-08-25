@@ -41,19 +41,10 @@ app.get("/products/create", (req, res) => {
 
 // tambah data product
 app.post("/products", async (req, res) => {
-  // variabel untuk mendapatkan data product nya
-  // buat data menggunakan model product
-  // dan req.body itu akan membawa data yg di dapat dari form
-  const product = new Product(req.body); // data product sudah dibuat dengan format model product
-  // kalau format modelnya sudah ada berserta datanya, bisa langsung panggil method save
-  // dari variabel yg menyimpan object yg berisi data productnya
+  // query
+  const product = new Product(req.body);
   await product.save();
-  // sesudah data di simpan, baru redirect ke halaman products atau detail product
   res.redirect(`/products/${product._id}`);
-  // kita bisa mengakses id dari product yg baru saja di simpan
-  // karena sebetulnya data dari object nya itu sudah didapatkan sebelum datanya di simpan
-  // id atau properti lainnya didapatkan pada saat membuat object product yg sudah ada datanya
-  // jadi bisa dimanfaatkan sesuai kebutuhan di route ini
 });
 
 // detail product
@@ -62,6 +53,14 @@ app.get("/products/:id", async (req, res) => {
   const { id } = req.params;
   const product = await Product.findById(id);
   res.render("products/show", { product });
+});
+
+// form edit data product
+app.get("/products/:id/edit", async (req, res) => {
+  // query
+  const { id } = req.params;
+  const product = await Product.findById(id);
+  res.render("products/edit", { product });
 });
 
 // port

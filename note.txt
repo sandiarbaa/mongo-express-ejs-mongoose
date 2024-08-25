@@ -10,3 +10,6 @@ Step yg sudah dilakukan di project ini :
   - setup express, ejs, mongoose (connection, view templating, port)
   - membuat model dan seed
   - membuat route /products dan menampilkan data products di halaman Products
+  - membuat route detail product
+  - membuat create form untuk tambah data product
+  - membuat route post untuk menyimpan data yg sudah di isi lewat form

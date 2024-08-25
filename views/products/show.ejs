@@ -19,5 +19,12 @@
     </ul>
     <a href="/products">All Products</a>
     <a href="/products/<%= product._id %>/edit">Edit</a>
+    <form
+      onclick="return confirm('Are you sure?')"
+      action="/products/<%= product._id %>?_method=DELETE"
+      method="post"
+    >
+      <button type="submit">Delete</button>
+    </form>
   </body>
 </html>

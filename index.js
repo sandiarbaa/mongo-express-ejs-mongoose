@@ -1,13 +1,15 @@
 // setup lib
 const path = require("path");
 const express = require("express");
+const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const app = express();
 
 // template engine ejs
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({ extended: true })); // agar express dapat mengambil data yg dikirimkan dari body request
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 
 /* Models */
 const Product = require("./models/product");
@@ -44,7 +46,7 @@ app.post("/products", async (req, res) => {
   // query
   const product = new Product(req.body);
   await product.save();
-  res.redirect(`/products/${product._id}`);
+  res.redirect(`/products/${product._id}`); // redirect ke halaman show product
 });
 
 // detail product
@@ -61,6 +63,16 @@ app.get("/products/:id/edit", async (req, res) => {
   const { id } = req.params;
   const product = await Product.findById(id);
   res.render("products/edit", { product });
+});
+
+// edit data product
+app.put("/products/:id", async (req, res) => {
+  // query
+  const { id } = req.params;
+  const product = await Product.findByIdAndUpdate(id, req.body, {
+    runValidators: true,
+  });
+  res.redirect(`/products/${product._id}`); // redirect ke halaman show product
 });
 
 // port

@@ -10,7 +10,12 @@
     <ul>
       <li>Brand: <%= product.brand %></li>
       <li>Color: <%= product.color %></li>
-      <li>Category: <%= product.category %></li>
+      <li>
+        Category:
+        <a href="/products?category=<%= product.category %>">
+          <%= product.category %>
+        </a>
+      </li>
       <li>
         Price: <%= (product.price).toLocaleString("id-ID", { style: "currency",
         currency: "IDR", minimumFractionDigits: 0, maximumFractionDigits: 0, })
@@ -19,6 +24,7 @@
     </ul>
     <a href="/products">All Products</a>
     <a href="/products/<%= product._id %>/edit">Edit</a>
+    <br /><br />
     <form
       onclick="return confirm('Are you sure?')"
       action="/products/<%= product._id %>?_method=DELETE"

@@ -32,8 +32,15 @@ app.get("/", (req, res) => {
 // all products
 app.get("/products", async (req, res) => {
   // query
-  const products = await Product.find({});
-  res.render("products/index", { products });
+  const { category } = req.query; // ambil nilai dari query string yg lewat url
+  if (category) {
+    // kalau query string category ada, maka cari data di dalam product berdasarkan categorynya
+    const products = await Product.find({ category }); // samain aja query string yg ingin dicari dengan properti yg ada di dalam schema modelnya, kaya gini nih category semua
+    res.render("products/index", { products, category });
+  } else {
+    const products = await Product.find({}); // tampilkan semua data
+    res.render("products/index", { products, category: "All" });
+  }
 });
 
 // form tambah data product

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Product</title>
+  </head>
+  <body>
+    <h1><%= product.name %></h1>
+    <ul>
+      <li>Brand: <%= product.brand %></li>
+      <li>Color: <%= product.color %></li>
+      <li>Size: <%= product.size %></li>
+      <!-- <li>Price: <%# formatRupiah(product.price) %></li> -->
+      <li>
+        Price: <%= (product.price).toLocaleString("id-ID", { style: "currency",
+        currency: "IDR", minimumFractionDigits: 0, maximumFractionDigits: 0, })
+        %>
+      </li>
+    </ul>
+    <a href="/products">All Products</a>
+  </body>
+</html>

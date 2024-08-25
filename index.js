@@ -26,11 +26,27 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+// all products
 app.get("/products", async (req, res) => {
+  // query
   const products = await Product.find({});
-  // console.log(products);
-  // res.send("it works");
   res.render("products/index", { products });
+});
+
+// detail product
+app.get("/products/:id", async (req, res) => {
+  // format rupiah
+  function formatRupiah(price) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(price);
+  }
+
+  // query
+  const { id } = req.params;
+  const product = await Product.findById(id);
+  res.render("products/show", { product, formatRupiah });
 });
 
 // port

@@ -89,6 +89,11 @@ app.delete("/products/:id", async (req, res) => {
   res.redirect("/products");
 });
 
+app.get("/categories", async (req, res) => {
+  const categories = await Product.distinct("category"); // menampilkan ada category apa saja
+  res.render("products/categories", { categories });
+});
+
 // port
 app.listen(3000, () => {
   console.log("shop app listening on http://127.0.0.1:3000");

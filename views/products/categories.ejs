@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Categories</title>
+  </head>
+  <body>
+    <h1>All Categories</h1>
+
+    <ul>
+      <% for(let category of categories) { %>
+      <li>
+        <a href="/products?category=<%= category %>">
+          <%= category %>
+        </a>
+      </li>
+      <% } %>
+    </ol>
+  </body>
+</html>

@@ -8,10 +8,13 @@
   <body>
     <h1><%= category %> Products</h1>
     <a href="/products/create">Add Product</a>
+
     <% if(category !== 'All') { %>
       <a href="/products">All Products</a>
+    <% } else {%>
+      <a href="/categories">All Categories</a>
     <% } %>
-    
+
     <ol>
       <% for( let product of products ) { %>
       <li>

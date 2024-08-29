@@ -15,6 +15,7 @@ app.use(methodOverride("_method"));
 
 /* Models */
 const Product = require("./models/product");
+const { wrap } = require("module");
 
 // connect to mongodb
 mongoose
@@ -26,6 +27,14 @@ mongoose
     console.error(err);
   });
 
+function wrapAsync(fn) {
+  return function (req, res, next) {
+    // kalau di function ini tidak ada error, maka otomatis function ini akan bekerja
+    // kalau ada error maka akan masuk di bagian catch
+    fn(req, res, next).catch((err) => next(err));
+  };
+}
+
 // route web path
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -34,10 +43,9 @@ app.get("/", (req, res) => {
 // all products
 app.get("/products", async (req, res) => {
   // query
-  const { category } = req.query; // ambil nilai dari query string yg lewat url
+  const { category } = req.query;
   if (category) {
-    // kalau query string category ada, maka cari data di dalam product berdasarkan categorynya
-    const products = await Product.find({ category }); // samain aja query string yg ingin dicari dengan properti yg ada di dalam schema modelnya, kaya gini nih category semua
+    const products = await Product.find({ category });
     res.render("products/index", { products, category });
   } else {
     const products = await Product.find({}); // tampilkan semua data
@@ -52,69 +60,69 @@ app.get("/products/create", (req, res) => {
 });
 
 // tambah data product
-app.post("/products", async (req, res) => {
-  // query
-  const product = new Product(req.body);
-  await product.save();
-  res.redirect(`/products/${product._id}`); // redirect ke halaman show product
-});
+app.post(
+  "/products",
+  wrapAsync(async (req, res) => {
+    // query
+    const product = new Product(req.body);
+    await product.save();
+    res.redirect(`/products/${product._id}`); // redirect ke halaman show product
+  })
+);
 
 // detail product
 // error handling di async function
-app.get("/products/:id", async (req, res, next) => {
-  try {
-    // query
+app.get(
+  "/products/:id",
+  wrapAsync(async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render("products/show", { product });
-  } catch (err) {
-    // gunakan next supaya dia menjalankan middleware error-handling yg di bawah itu
-    // karena itu kan middleware, dan next akan mengecek ada middleware lagi ngga, kalo ada ya lanjut ke situ
-    next(new ErrorHandler("Product not found", 404));
-  }
-});
+  })
+);
 
 // form edit data product
-app.get("/products/:id/edit", async (req, res, next) => {
-  try {
+app.get(
+  "/products/:id/edit",
+  wrapAsync(async (req, res) => {
     // query
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render("products/edit", { product });
-  } catch (err) {
-    next(new ErrorHandler("Product not found", 404));
-  }
-});
+  })
+);
 
 // edit data product
-app.put("/products/:id", async (req, res, next) => {
-  try {
+app.put(
+  "/products/:id",
+  wrapAsync(async (req, res) => {
     // query
     const { id } = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body, {
       runValidators: true,
     });
     res.redirect(`/products/${product._id}`); // redirect ke halaman show product
-  } catch (err) {
-    next(new ErrorHandler("Failed update data", 412));
-  }
-});
+  })
+);
 
 // delete products
-app.delete("/products/:id", async (req, res, next) => {
-  try {
+app.delete(
+  "/products/:id",
+  wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Product.findByIdAndDelete(id);
     res.redirect("/products");
-  } catch (err) {
-    next(new ErrorHandler("Failed delete data", 412));
-  }
-});
+  })
+);
 
-app.get("/categories", async (req, res) => {
-  const categories = await Product.distinct("category"); // menampilkan ada category apa saja
-  res.render("products/categories", { categories });
-});
+// all categories
+app.get(
+  "/categories",
+  wrapAsync(async (req, res) => {
+    const categories = await Product.distinct("category"); // menampilkan ada category apa saja
+    res.render("products/categories", { categories });
+  })
+);
 
 // middleware error-handling
 app.use((err, req, res, next) => {
@@ -126,9 +134,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log("shop app listening on http://127.0.0.1:3000");
 });
-
-// error handling
-// buat objek errornya dulu
-// lalu lakukan proses error handling di route, gunakan next
-// kalau errornya tidak ada akan pakai default user-defined middleware error-handling
-// kalau ada ya pakai error yg kita definisikan

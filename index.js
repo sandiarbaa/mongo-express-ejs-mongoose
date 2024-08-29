@@ -124,7 +124,36 @@ app.get(
   })
 );
 
+// bisa juga gini buat function sendiri untuk menghandle nya
+const validatorHandler = (err) => {
+  err.status = 400;
+  err.message = Object.values(err.errors).map((e) => e.message);
+  return new ErrorHandler(err.message, err.status);
+};
+
+// 2) tambahkan middleware lagi ini, untuk memecah/mengurai error message dari si mongoose
+app.use((err, req, res, next) => {
+  console.dir(err);
+  // ValidationError dan CastError adalah properti/method error dari si mongoose
+  // cara MENGHANDLE ERROR di dalam mongoose
+  // if (err.name === "ValidationError") {
+  //   err.status = 400;
+  //   err.message = Object.values(err.errors).map((e) => e.message);
+  // }
+
+  //mencari error di mongoose bisa dicari dengan mencari error name nya, dan untuk masing-masing kondisinya kita tentukan bagaimana cara menampilkan nya
+  if (err.name === "ValidationError") err = validatorHandler(err); // re-assign value dari validatorHandler
+
+  // ini ceritanya untuk CastError berarti datanya tidak ditemukan yg berdasarkan id itu, ini mongoose
+  if (err.name === "CastError") {
+    err.status = 404;
+    err.message = "Product not found";
+  }
+  next(err);
+});
+
 // middleware error-handling
+// 1) SEBELUM DITAMPILKAN response nya di sini
 app.use((err, req, res, next) => {
   const { status = 500, message = "Something went wrong" } = err;
   res.status(status).send(message);

@@ -15,7 +15,7 @@ app.use(methodOverride("_method"));
 
 /* Models */
 const Product = require("./models/product");
-const { wrap } = require("module");
+const Garment = require("./models/garment");
 
 // connect to mongodb
 mongoose
@@ -33,6 +33,30 @@ function wrapAsync(fn) {
   };
 }
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.get(
+  "/garments",
+  wrapAsync(async (req, res) => {
+    const garments = await Garment.find({});
+    res.render("garments/index", { garments });
+  })
+);
+
+app.get("/garments/create", (req, res) => {
+  res.render("garments/create");
+});
+
+app.post(
+  "/garments",
+  wrapAsync(async (req, res) => {
+    const garment = new Garment(req.body);
+    await garment.save();
+    res.redirect("/garments");
+  })
+);
 
 app.get(
   "/products",
@@ -57,8 +81,6 @@ app.get(
   })
 );
 
-
-
 app.post(
   "/products",
   wrapAsync(async (req, res) => {
@@ -67,8 +89,6 @@ app.post(
     res.redirect(`/products/${product._id}`);
   })
 );
-
-
 
 app.get(
   "/products/:id/edit",

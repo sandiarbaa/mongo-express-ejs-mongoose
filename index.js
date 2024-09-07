@@ -68,6 +68,36 @@ app.get(
   })
 );
 
+// schema url kalau ingin membuat data, tapi ada data parent nya juga
+// ini membuat route untuk menambahkan data produk tapi berdasarkan garment id nya juga
+// /garments/:garment_id/product/create // create
+// /garments/:garment_id/product // show
+// /garments/:garment_id/product/:product_id/edit // edit
+// /garments/:garment_id/product/:product_id // delete
+
+// garment/:garment_id/product/create
+app.get("/garments/:garment_id/products/create", async (req, res) => {
+  const { garment_id } = req.params;
+  res.render("products/create", { garment_id });
+});
+
+// garment/:garment_id/product/
+app.post(
+  "/garments/:garment_id/products",
+  wrapAsync(async (req, res) => {
+    const { garment_id } = req.params;
+    const garment = await Garment.findById(garment_id);
+    const product = new Product(req.body); // instance object product ini id nya akan di simpan di properti products di entitas garments
+    // console.log(product);
+    // console.log(garment_id);
+    garment.products.push(product);
+    await garment.save();
+    await garment.save();
+    console.log(garment);
+    res.redirect(`/garments/${garment_id}`);
+  })
+);
+
 // Product
 app.get(
   "/products",
@@ -102,7 +132,7 @@ app.post(
 );
 
 app.get(
-  "/products/:id/edit",
+  "/products/:id/update",
   wrapAsync(async (req, res) => {
     // query
     const { id } = req.params;

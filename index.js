@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// Garment
 app.get(
   "/garments",
   wrapAsync(async (req, res) => {
@@ -58,6 +59,16 @@ app.post(
   })
 );
 
+app.get(
+  "/garments/:id",
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const garment = await Garment.findById(id);
+    res.render("garments/show", { garment });
+  })
+);
+
+// Product
 app.get(
   "/products",
   wrapAsync(async (req, res) => {

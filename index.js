@@ -93,8 +93,17 @@ app.post(
     product.garment = garment;
     await garment.save();
     await product.save();
-    // console.log(garment);
     res.redirect(`/garments/${garment_id}`);
+  })
+);
+
+app.delete(
+  "/garments/:garment_id",
+  wrapAsync(async (req, res) => {
+    const { garment_id } = req.params;
+    // findOneAndDelete ini digunakan karena di dokumentasi express di method middleware post yaitu salah satunya bisa menggunakan findOneAndDelete
+    await Garment.findOneAndDelete({ _id: garment_id });
+    res.redirect("/garments");
   })
 );
 

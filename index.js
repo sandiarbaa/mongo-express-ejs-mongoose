@@ -88,10 +88,9 @@ app.post(
   wrapAsync(async (req, res) => {
     const { garment_id } = req.params;
     const garment = await Garment.findById(garment_id);
-    const product = new Product(req.body); // instance object product ini id nya akan di simpan di properti products di entitas garments
-    // console.log(product);
-    // console.log(garment_id);
+    const product = new Product(req.body);
     garment.products.push(product);
+    product.garment = garment;
     await garment.save();
     await product.save();
     // console.log(garment);
@@ -119,8 +118,8 @@ app.get(
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id).populate("garment");
-    res.send(product);
-    // res.render("products/show", { product });
+    // res.send(product);
+    res.render("products/show", { product });
   })
 );
 
